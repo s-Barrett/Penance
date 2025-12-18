@@ -1,0 +1,46 @@
+#version 330 core
+out vec4 FragColor;
+
+uniform float iTime;
+uniform vec2 iResolution;
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+float noise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    vec2 u = f*f*(3.0-2.0*f);
+    return mix(
+        mix(hash(i + vec2(0.0,0.0)), hash(i + vec2(1.0,0.0)), u.x),
+        mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x),
+        u.y
+    );
+}
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / iResolution.xy * 2.0 - 1.0;
+    uv.x *= iResolution.x / iResolution.y;
+    uv *= 0.3; // zoom out
+
+    float t = iTime * 0.2;
+    float angle = atan(uv.y, uv.x) + t;
+    float radius = length(uv);
+
+    vec2 swirl = vec2(cos(angle), sin(angle)) * radius * 3.0;
+    vec2 swirl2 = vec2(cos(angle*1.3 + 1.0), sin(angle*1.3 + 1.0)) * radius * 2.5;
+
+    float n = noise(swirl + t*2.0);
+    n += 0.5 * noise(swirl2 + t*3.0);
+
+    // stars / tiny sparkles
+    float stars = step(0.995, hash(gl_FragCoord.xy + iTime));
+    
+    // color map with pulsing
+    vec3 col = vec3(0.0);
+    col += n * vec3(0.3, 0.0, 0.6);
+    col += pow(n, 3.0) * vec3(1.0, 0.2, 0.5);
+    col *= 0.5 + 0.5*sin(iTime + radius*5.0);
+    col += vec3(stars);
+
+    FragColor = vec4(col, 1.0);
+}
+
