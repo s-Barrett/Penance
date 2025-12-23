@@ -1,4 +1,5 @@
 #include "transform.h"
+#include <glm/fwd.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -28,3 +29,12 @@ void Transform::rotate(const glm::quat &delta) {
 }
 
 const glm::quat &Transform::getRotation() const { return m_Rotation; }
+
+void Transform::setScale(const glm::vec3 &scale) {
+  m_Scale = scale;
+  m_Dirty = true;
+}
+
+const glm::vec3 &Transform::getScale() const { return m_Scale; }
+
+const glm::mat4 &Transform::getModelMatrix() const { return 0; }
