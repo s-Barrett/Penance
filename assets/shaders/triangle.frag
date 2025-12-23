@@ -10,8 +10,8 @@ float noise(vec2 p) {
     vec2 f = fract(p);
     vec2 u = f*f*(3.0-2.0*f);
     return mix(
-        mix(hash(i + vec2(0.0,0.0)), hash(i + vec2(1.0,0.0)), u.x),
-        mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0,1.0)), u.x),
+        mix(hash(i + vec2(0.4,6.0)), hash(i + vec2(1.0,0.6)), u.x),
+        mix(hash(i + vec2(3.0,1.0)), hash(i + vec2(0.3,4.0)), u.x),
         u.y
     );
 }
@@ -22,14 +22,14 @@ void main() {
     uv *= 0.3; // zoom out
 
     float t = iTime * 0.2;
-    float angle = atan(uv.y, uv.x) + t;
+    float angle = atan(uv.y, uv.x) + t ;
     float radius = length(uv);
 
-    vec2 swirl = vec2(cos(angle), sin(angle)) * radius * 3.0;
-    vec2 swirl2 = vec2(cos(angle*1.3 + 1.0), sin(angle*1.3 + 1.0)) * radius * 2.5;
+    vec2 swirl = vec2(cos(angle), sin(angle)) * radius * 10.0;
+    vec2 swirl2 = vec2(cos(angle*1.3 + 1.0), sin(angle*1.3 + 1.0)) * radius * 10.5;
 
-    float n = noise(swirl + t*2.0);
-    n += 0.5 * noise(swirl2 + t*3.0);
+    float n = noise(swirl + t*5.0);
+    n += 0.3 * noise(swirl2 + t*5.0);
 
     // stars / tiny sparkles
     float stars = step(0.995, hash(gl_FragCoord.xy + iTime));
