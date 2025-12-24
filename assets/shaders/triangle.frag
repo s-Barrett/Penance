@@ -21,7 +21,7 @@ void main() {
     uv.x *= iResolution.x / iResolution.y;
     uv *= 0.3; // zoom out
 
-    float t = iTime * 0.2;
+    float t = iTime * 0.1;
     float angle = atan(uv.y, uv.x) + t ;
     float radius = length(uv);
 
@@ -31,9 +31,18 @@ void main() {
     float n = noise(swirl + t*5.0);
     n += 0.3 * noise(swirl2 + t*5.0);
 
-    // stars / tiny sparkles
-    float stars = step(0.995, hash(gl_FragCoord.xy + iTime));
-    
+    //Stars fading in and out
+    //density and distribution of the stars, higher means more density
+    float starNoise = noise(swirl * 30.0 + t * 0.5);
+    //brightness and desity as well, lower means more stars
+    float stars = step(0.98, starNoise);
+    //randomness and fade of stars, higher is faster fade 6.28
+    //speed of the fade, lower is slower 0.1
+    stars *= 0.5 + 0.5 * sin(iTime * 0.1 + starNoise * 6.28);
+    //clamp values from sine so stars dont look dumb
+    stars = clamp(stars, 0.0, 1.0);
+
+
     // color map with pulsing
     vec3 col = vec3(0.0);
     col += n * vec3(0.3, 0.0, 0.6);
