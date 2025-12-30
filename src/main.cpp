@@ -1,4 +1,5 @@
 #include <glad/glad.h>
+#include <glm/fwd.hpp>
 #include <iostream>
 
 #include <SDL.h>
@@ -12,8 +13,8 @@
 #include "shader.h"
 #include "ui.h"
 
-std::vector<float> triangleVertices = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
-                                       0.0f,  0.0f,  0.5f, 0.0f};
+std::vector<glm::vec3> triangleVertices = {
+    {-0.5f, -0.5f, 0.0f}, {0.5f, -0.5f, 0.0f}, {0.0f, 0.5f, 0.0f}};
 
 int main(int argc, char **argv) {
 
@@ -50,6 +51,14 @@ int main(int argc, char **argv) {
     return -1;
   }
 
+  glDisable(GL_CULL_FACE);
+
+  glm::mat4 model = glm::mat4(1.0f); // identity for now
+
+  int w, h;
+  SDL_GetWindowSize(window, &w, &h);
+  glViewport(0, 0, w, h);
+
   Shader shader("../assets/shaders/triangle.vert",
                 "../assets/shaders/triangle.frag");
 
@@ -66,17 +75,13 @@ int main(int argc, char **argv) {
       ui.processEvent(e);
 
       if (e.type == SDL_QUIT)
-      running = false;
+        running = false;
     }
     glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     shader.use();
-
-    float time = SDL_GetTicks() / 1000.0f;
-    glUniform1f(glGetUniformLocation(shader.getID(), "iTime"), time);
-    glUniform2f(glGetUniformLocation(shader.getID(), "iResolution"), 800.0f,
-                600.0f);
+    shader.uniform("model", model);
 
     triangleMesh.draw();
 

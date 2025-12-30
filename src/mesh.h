@@ -1,17 +1,17 @@
 #pragma once
 #include <glad/glad.h>
+#include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 #include <vector>
 
-class Mesh
-{
-  public:
+class Mesh {
+public:
+  Mesh(const std::vector<glm::vec3> &vertices);
+  void draw() const;
 
-    Mesh(const std::vector<float>& vertices);
-    void draw() const;
+  ~Mesh();
 
-    ~Mesh();
-
-  private:
-    unsigned int VAO, VBO;
-    size_t vertexCount;
+private:
+  unsigned int VAO, VBO;
+  size_t vertexCount;
 };
