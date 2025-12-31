@@ -11,6 +11,7 @@
 
 #include "mesh.h"
 #include "shader.h"
+#include "transform.h"
 #include "ui.h"
 
 std::vector<glm::vec3> triangleVertices = {
@@ -66,6 +67,8 @@ int main(int argc, char **argv) {
 
   UI ui(window);
 
+  Transform transform;
+
   bool running = true;
   SDL_Event e;
 
@@ -81,9 +84,11 @@ int main(int argc, char **argv) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     shader.use();
-    shader.uniform("model", model);
+    shader.uniform("model", transform.getModelMatrix());
 
     triangleMesh.draw();
+
+    transform.setPosition(glm::vec3(0.5f, 0.0f, 0.0f));
 
     ui.beginFrame(); // start ImGui frame
     ui.endFrame();   // render ImGui windows

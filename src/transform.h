@@ -19,7 +19,7 @@ public:
   void setScale(const glm::vec3 &scale);
   const glm::vec3 &getScale() const;
 
-  const glm::mat4 &getModelMatrix() const;
+  const glm::mat4 &getModelMatrix();
 
 private:
   glm::vec3 m_Position{0.0f};
